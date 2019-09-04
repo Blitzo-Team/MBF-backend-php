@@ -30,3 +30,7 @@ Route::get('/file', 'FileController@read_file');
 
 ### File Save Slide
 Route::post('/slide', 'SlideController@create_or_update');
+
+### Breakfast 
+Route::post('/breakfast', 'BreakfastController@create'); 
+Route::get('/breakfasts', 'BreakfastController@list');

@@ -13,30 +13,36 @@ class SlideController extends Controller
 {
     public function create_or_update(Request $request, \App\Slide $slide, $is_new=false) {
         
-        $validator_arr = [
+        // $validator_arr = [
           
-        ];
+        // ];
 
-        $validator = Validator::make($request->all(), $validator_arr);
+        // $validator = Validator::make($request->all(), $validator_arr);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => 'validation_failed', 'messages' => $validator->errors()->all()], 400);
-        }
+        // if ($validator->fails()) {
+        //     return response()->json(['error' => 'validation_failed', 'messages' => $validator->errors()->all()], 400);
+        // }
+
         // actual creation
-        $slide->fill(
-            // TODO
-            $request->only([])
-        );
+        $data = $request->only('slides')['slides'];
+       
+        foreach($data as $row) {
+            $slide = new \App\Slide();
+            $slide->file_type = $row['file_type'];
+            $slide->file_location = $row['file_location'];
+            $slide->file_name = $row['file_name'];
+            $slide->file_text = $row['file_text'];
 
-        // TODO: fill up other non-required fields
-        $slide->is_special = request('is_special', false);
-
-        // TODO: save
+            $slide->save();
+        }
+        
         \DB::beginTransaction();
         try {
             if ($is_new) {
+                $slide->save();
             }
             else {
+                $slide->save();
             }
         }
         catch (\Exception $e) {
@@ -44,10 +50,18 @@ class SlideController extends Controller
             throw $e;
         }
         \DB::commit();
-
-        $slide = \App\slide::where('id', '=' , $slide->id)->first();
-        $slide = $this->enrich($slide);
-        return response()->json(array('slide' => $slide, 'result' => $result));
+      
+        return response()->json(array('slide' => $data));
      
     }
+
+    public function create(Request $request) {
+        // $this->me = JWTAuth::parseToken()->authenticate();
+        // if (!($this->me->claims['temporary'] ?? $this->DISABLE_AUTH)) {
+        //     return response()->json(Constants::ERROR_UNAUTHORIZED, 403);
+        // }
+        return $this->create_or_update($request, new \App\Slide(), true);
+    }
+
+    
 }
