@@ -11,31 +11,63 @@ class BreakfastController extends Controller
 {
     public function create_or_update(Request $request, \App\Breakfast $breakfast, $is_new=false) {
 
-        $data = $request->only('breakfast')['breakfast'];
-    
+        // $data = $request->only('breakfast')['breakfast'];
+
+        $validator_arr = [
+            // TODO
+        ];
+
+        $validator = Validator::make($request->all(), $validator_arr);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => 'validation_failed', 'messages' => $validator->errors()->all()], 400);
+        }
+        // actual creation
+
+        $breakfast->file_type = request('file_type');
+        $breakfast->file_location = request('file_location');
+        $breakfast->file_name = request('file_name');
+
+        $breakfast->calories = request('calories');
+        $breakfast->calories_gram = request('calories_gram');
+
+        $breakfast->protein = request('protein');
+        $breakfast->protein_gram = request('protein_gram');
+
+        $breakfast->carbohydrate = request('carbohydrate');
+        $breakfast->carbohydrate_gram = request('carbohydrate_gram');
+        
+        $breakfast->sugar = request('sugar');
+        $breakfast->sugar_gram =  request('sugar_gram');
+
+        $breakfast->fat = request('fat');
+        $breakfast->fat_gram =  request('fat_gram');
+
+        $breakfast->saturated_fat = request('saturated_fat');
+        $breakfast->saturated_fa_gram = request('saturated_fa_gram');
+
+        $breakfast->sodium = request('sodium');
+        $breakfast->sodium_gram = request('sodium_gram');
+
+        $breakfast->name = request('name');
+        $breakfast->description = request('description');
+        $breakfast->weight = request('weight');
+        $breakfast->category = request('category');
+        $breakfast->price = request('price');
+  
+        $breakfast->filter = request('filter');
+        $breakfast->ingredients =  json_encode(request('ingredients'));
+        $breakfast->size =  request('size');
+        $breakfast->status = 1;
+
         \DB::beginTransaction();
             try {
                 if ($is_new) {
-
-                    foreach($data as $row) {
-                        $breakfast = new \App\Breakfast();
-
-                        $breakfast->file_type = $row['file_type'];
-                        $breakfast->file_location = $row['file_location'];
-                        $breakfast->file_name = $row['file_name'];
-
-                        $breakfast->calories = $row['cal'];
-                        $breakfast->carb = $row['carb'];
-                        $breakfast->fat = $row['fat'];
-
-                        $breakfast->protein = $row['pro'];
-                        $breakfast->grams = $row['grams'];
-                        $breakfast->food_name = json_encode( $row['title']);
-                        $breakfast->status = "custom";
-                        $breakfast->save();
-                    }
+                    $breakfast->save();
                 }
                 else {
+                    $breakfast->updated_at = Carbon::now();
+                    $breakfast->save();
                 }
             }
             catch (\Exception $e) {
@@ -43,11 +75,7 @@ class BreakfastController extends Controller
                 throw $e;
             }
         \DB::commit();
-
-        // $breakfast = \App\Breakfast::where('id', '=' , $breakfast->id)->first();
-        // $breakfast = $this->enrich($breakfast);
         return response()->json(array('data' => $breakfast));
-        // response
     }
 
     public function create(Request $request) {

@@ -11,7 +11,7 @@ class Breakfast extends Model
     protected $fillable = [];
     protected $dates = ['created_at', 'updated_at'];
     protected $casts = [
-       
+       "status" => "boolean"
     ];
 
     public function getCreatedAtAttribute($date) {
