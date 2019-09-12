@@ -11,7 +11,6 @@ class BreakfastController extends Controller
 {
     public function create_or_update(Request $request, \App\Breakfast $breakfast, $is_new=false) {
 
-        // $data = $request->only('breakfast')['breakfast'];
 
         $validator_arr = [
             // TODO
@@ -22,48 +21,35 @@ class BreakfastController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => 'validation_failed', 'messages' => $validator->errors()->all()], 400);
         }
+
+
+
         // actual creation
+       
+            $breakfast->image = json_encode(request('image'));
+            // $breakfast->sizes = json_encode(request('sizes'));
+            $breakfast->filters = json_encode(request('filters'));
+            $breakfast->filters_additional_sides = json_encode(request('filters_additional_sides'));
 
-        $breakfast->file_type = request('file_type');
-        $breakfast->file_location = request('file_location');
-        $breakfast->file_name = request('file_name');
+            $breakfast->name = request('name');
+            $breakfast->description = request('description');
+            $breakfast->weight = request('weight');
+            $breakfast->id_number = request('id_number');
+            $breakfast->status = 1;
+            $breakfast->category = null;
+           
+            // if (array_key_exists('sizes', $request->only('sizes')['sizes'])) {
+            //     $sizes = $this->add_sizes($request, $is_new, $breakfast->id);
 
-        $breakfast->calories = request('calories');
-        $breakfast->calories_gram = request('calories_gram');
-
-        $breakfast->protein = request('protein');
-        $breakfast->protein_gram = request('protein_gram');
-
-        $breakfast->carbohydrate = request('carbohydrate');
-        $breakfast->carbohydrate_gram = request('carbohydrate_gram');
-        
-        $breakfast->sugar = request('sugar');
-        $breakfast->sugar_gram =  request('sugar_gram');
-
-        $breakfast->fat = request('fat');
-        $breakfast->fat_gram =  request('fat_gram');
-
-        $breakfast->saturated_fat = request('saturated_fat');
-        $breakfast->saturated_fa_gram = request('saturated_fa_gram');
-
-        $breakfast->sodium = request('sodium');
-        $breakfast->sodium_gram = request('sodium_gram');
-
-        $breakfast->name = request('name');
-        $breakfast->description = request('description');
-        $breakfast->weight = request('weight');
-        $breakfast->category = request('category');
-        $breakfast->price = request('price');
-  
-        $breakfast->filter = request('filter');
-        $breakfast->ingredients =  json_encode(request('ingredients'));
-        $breakfast->size =  request('size');
-        $breakfast->status = 1;
-
+            //     $breakfast->sizes = $sizes;
+            // }
+      
         \DB::beginTransaction();
             try {
                 if ($is_new) {
                     $breakfast->save();
+                    $breakfast->sizes = $this->add_sizes($request, $is_new, $breakfast->id);
+                
                 }
                 else {
                     $breakfast->updated_at = Carbon::now();
@@ -76,6 +62,36 @@ class BreakfastController extends Controller
             }
         \DB::commit();
         return response()->json(array('data' => $breakfast));
+    }
+
+    public function add_sizes($request, $is_new, $breakfast){
+        $query = $request->only('sizes')['sizes'];
+
+        // if (!$is_new) {
+        //     $old_work_experience = \App\WorkExperience::where('id', $breakfast)->get();
+        //     foreach ($old_work_experience as $item) {
+        //         $item->delete();
+        //     }
+        // }
+
+        foreach($query as $data){
+            $data_item = new \App\sizes();
+
+            $data_item->calorie = $data['calorie'];
+            $data_item->protein = $data['protein'];
+            $data_item->carbohydrates = $data['carbohydrates'];
+            $data_item->fats = $data['fats'];
+            $data_item->saturated_fat = $data['saturated_fat'];
+            $data_item->sugars = $data['sugars'];
+            $data_item->sodium = $data['sodium'];
+            $data_item->size = $data['size'];
+            $data_item->price  = $data['price'];
+            $data_item->meal_id  = $breakfast;
+            $data_item->save();
+        }
+
+        return $data_item->id;
+    
     }
 
     public function create(Request $request) {
@@ -102,6 +118,18 @@ class BreakfastController extends Controller
         return $this->create_or_update($request, $breakfast);
     }
 
+    public function update_category(Request $request, $breakfast) {
+        // $this->me = JWTAuth::parseToken()->authenticate();
+        // if (!($this->me->claims['temporary'] ?? $this->DISABLE_AUTH)) {
+        //     return response()->json(Constants::ERROR_UNAUTHORIZED, 403);
+        // }
+        $table = new \App\Breakfast();
+        $table -> where('id', $breakfast)
+               -> update(array( "category" => request('category') )); 
+
+        return response()->json(array($table, $breakfast));
+    }
+
     public function list(Request $request) {
         // $this->me = JWTAuth::parseToken()->authenticate();
         // if (!($this->me->claims['temporary'] ?? $this->DISABLE_AUTH)) {
@@ -111,12 +139,40 @@ class BreakfastController extends Controller
         $query = $query->select('*');
         
         // filtering
-        $ALLOWED_FILTERS = [];
+        $ALLOWED_FILTERS = ['category'];
         $SEARCH_FIELDS = [];
         $JSON_FIELDS = [];
         $BOOL_FIELDS = [];
-        $result = $this->paginate_filter_sort_search($query, $ALLOWED_FILTERS, $JSON_FIELDS, $BOOL_FIELDS, $SEARCH_FIELDS);
-        return response()->json($result);
+        $response = $this->paginate_filter_sort_search($query, $ALLOWED_FILTERS, $JSON_FIELDS, $BOOL_FIELDS, $SEARCH_FIELDS);
+        
+        $data = $response['data'];
+        $result = array();
+
+        foreach($data as $row){
+            $array = array();
+            $array['id'] = $row->id;
+            $array['id_number'] = $row->id_number;
+            $array['image'] = json_decode($row->image);
+            $array['status'] = $row->status;
+
+            $array['name'] = $row->name;
+            $array['description'] = $row->description;
+            $array['weight'] = $row->weight;
+
+            $array['filters'] = json_decode($row->filters);
+            $array['filters_additional_sides'] = json_decode($row->filters_additional_sides);
+            $array['status'] = $row->status;
+
+            $array['category'] = $row->category;
+            $array['sizes'] = \DB::table('sizes')->where('meal_id', $row->id)->get();
+
+            array_push($result, $array);
+        }
+
+        $response['data'] = $result;
+        
+        return response()->json($response);
+
     }
 
 }

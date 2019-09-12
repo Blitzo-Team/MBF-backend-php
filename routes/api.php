@@ -36,3 +36,4 @@ Route::post('/breakfast', 'BreakfastController@create');
 Route::get('/breakfasts', 'BreakfastController@list');
 Route::put('/breakfast/{breakfast}', 'BreakfastController@update');
 Route::get('/breakfasts/{breakfast}', 'BreakfastController@read');
+Route::put('/breakfast/{breakfast}/category', 'BreakfastController@update_category');

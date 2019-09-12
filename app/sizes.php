@@ -5,16 +5,13 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
-class Breakfast extends Model
+class sizes extends Model
 {
-    protected $table = "breakfast";
+    protected $table = "sizes";
     protected $fillable = [];
     protected $dates = ['created_at', 'updated_at'];
     protected $casts = [
-            "status" => "boolean"
-            // "filters" => "array",  
-            // "filters_additional_sides" => "array",
-            // "sizes" => "array"
+       
     ];
 
     public function getCreatedAtAttribute($date) {
