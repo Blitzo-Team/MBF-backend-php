@@ -175,5 +175,58 @@ class FixedMealController extends Controller
         
             return response()->json($result);
     }
+
+    
+    // public function read(Request $request,  $muscle_gain) {
+    //     // $this->me = JWTAuth::parseToken()->authenticate();
+    //     // if (!($this->me->claims['temporary'] ?? $this->DISABLE_AUTH)) {
+    //     //     return response()->json(Constants::ERROR_UNAUTHORIZED, 403);
+    //     // }
+
+    //     $query = \DB::table('muscle_gain')->where('muscle_gain.id', $muscle_gain);
+    //     $query = $query->join('breakfast', 'breakfast.id', '=', 'muscle_gain.meal_id')
+    //                    ->select(
+    //                        'breakfast.id_number',
+    //                        'breakfast.image',
+    //                        'breakfast.status',
+    //                        'breakfast.name',
+    //                        'breakfast.description',
+    //                        'breakfast.weight',
+    //                        'breakfast.filters',
+    //                        'breakfast.filters_additional_sides',
+    //                        'breakfast.status',
+    //                        'breakfast.category',
+    //                        'muscle_gain.meal_id',
+    //                        'muscle_gain.size_id',
+    //                        'muscle_gain.id',
+    //                    )
+    //                    ->get();
+                  
+    //         $result = array();
+    
+    //         foreach($query as $row){
+    //             $array = array();
+    //             $array['id'] = $row->id;
+    //             $array['id_number'] = $row->id_number;
+    //             $array['image'] = json_decode($row->image);
+    //             $array['status'] = $row->status;
+    
+    //             $array['name'] = $row->name;
+    //             $array['description'] = $row->description;
+    //             $array['weight'] = $row->weight;
+    
+    //             $array['filters'] = json_decode($row->filters);
+    //             $array['filters_additional_sides'] = json_decode($row->filters_additional_sides);
+    //             $array['status'] = $row->status;
+    
+    //             $array['category'] = $row->category;
+    //             $array['sizes'] = \DB::table('sizes')->where('id', json_decode($row->size_id))->get();
+    
+    //             array_push($result, $array);
+    //         }
+    
+        
+    //         return response()->json($result);
+    // }
     
 }
