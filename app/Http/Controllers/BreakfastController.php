@@ -22,28 +22,18 @@ class BreakfastController extends Controller
             return response()->json(['error' => 'validation_failed', 'messages' => $validator->errors()->all()], 400);
         }
 
-
-
         // actual creation
-       
             $breakfast->image = json_encode(request('image'));
-            // $breakfast->sizes = json_encode(request('sizes'));
             $breakfast->filters = json_encode(request('filters'));
             $breakfast->filters_additional_sides = json_encode(request('filters_additional_sides'));
-
             $breakfast->name = request('name');
             $breakfast->description = request('description');
             $breakfast->weight = request('weight');
             $breakfast->id_number = request('id_number');
             $breakfast->status = 1;
-            $breakfast->category = null;
-           
-            // if (array_key_exists('sizes', $request->only('sizes')['sizes'])) {
-            //     $sizes = $this->add_sizes($request, $is_new, $breakfast->id);
+            $breakfast->category = request('category');
+            $breakfast->sides = json_encode(request('sides'));;
 
-            //     $breakfast->sizes = $sizes;
-            // }
-      
         \DB::beginTransaction();
             try {
                 if ($is_new) {
@@ -61,6 +51,7 @@ class BreakfastController extends Controller
                 throw $e;
             }
         \DB::commit();
+
         return response()->json(array('data' => $breakfast));
     }
 
@@ -90,7 +81,14 @@ class BreakfastController extends Controller
             $data_item->save();
         }
 
-        return $data_item->id;
+        if($data_item->id === null) { 
+            $data_item_value = \App\Breakfast::where('meal_id', $breakfast)->get();
+            foreach ($data_item_value as $item) {
+                $item->delete();
+             }
+          }
+
+          return $data_item->id;
     
     }
 
@@ -174,5 +172,7 @@ class BreakfastController extends Controller
         return response()->json($response);
 
     }
+
+    
 
 }

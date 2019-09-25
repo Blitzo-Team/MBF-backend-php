@@ -37,3 +37,9 @@ Route::get('/breakfasts', 'BreakfastController@list');
 Route::put('/breakfast/{breakfast}', 'BreakfastController@update');
 Route::get('/breakfasts/{breakfast}', 'BreakfastController@read');
 Route::put('/breakfast/{breakfast}/category', 'BreakfastController@update_category');
+
+###muscleGain
+Route::post('/muscle_gain', 'FixedMealController@create'); 
+Route::put('/muscle_gain/{muscle_gain}/update', 'FixedMealController@update'); 
+Route::get('/muscle_gains', 'FixedMealController@list');
+Route::get('/muscle_gains/{muscle_gain}', 'FixedMealController@read');

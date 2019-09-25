@@ -24,6 +24,7 @@ class CreateBreakfastTable extends Migration
             $table->string('filters')->nullable();
             $table->string('filters_additional_sides')->nullable();
             $table->string('sizes', 255)->nullable();
+            $table->string('sides', 255)->nullable();
             $table->integer('status')->nullable();
             $table->string('category')->nullable();
            
