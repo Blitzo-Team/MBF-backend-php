@@ -42,4 +42,6 @@ Route::put('/breakfast/{breakfast}/category', 'BreakfastController@update_catego
 Route::post('/muscle_gain', 'FixedMealController@create'); 
 Route::put('/muscle_gain/{muscle_gain}/update', 'FixedMealController@update'); 
 Route::get('/muscle_gains', 'FixedMealController@list');
-Route::get('/muscle_gains/{muscle_gain}', 'FixedMealController@read');
+Route::get('/muscle_gains/{muscle_gain}', 'FixedMealController@read'); 
+Route::post('/muscle_gains/truncate_muscle_gain', 'FixedMealController@truncate_muscle_gain'); 
+Route::delete('/muscle_gains/{muscle_gain}', 'FixedMealController@remove_muscle_item'); 

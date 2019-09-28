@@ -22,12 +22,25 @@ class FixedMealController extends Controller
         }
         $data = $request->only('data')['data'];
 
+        // checking valiidation
+
+        $table = \DB::table('muscle_gain')->pluck('meal_id');
+
+        for($i = 0; $i < count($data); $i++) {
+            for($a = 0; $a < count($table); $a++) {
+            
+                if($data[$i]['id'] == $table[$a]) {
+                    return response()->json(array("result" => "check list already in use in the menu!"), 404);
+                }
+            }
+        }
+
         \DB::beginTransaction();
         try {
             if ($is_new) {
                 foreach($data as $row) {
                     $MuscleGain =  new \App\MuscleGain();
-                    $MuscleGain->size_id  = $row['size'];
+                    $MuscleGain->size_id  = 0;
                     $MuscleGain->meal_id  = $row['id'];
                     $MuscleGain->save();
                  }
@@ -58,8 +71,14 @@ class FixedMealController extends Controller
         // if (!($this->me->claims['temporary'] ?? $this->DISABLE_AUTH)) {
         //     return response()->json(Constants::ERROR_UNAUTHORIZED, 403);
         // }
-        $muscle_gain->meal_id = request('id');
-        $muscle_gain->size_id = request('size');
+        if(request('id')){
+         $muscle_gain->meal_id = request('id');
+        }
+
+        if(request('size')){
+            $muscle_gain->size_id = request('size');
+        }
+      
         $muscle_gain->save();
         return response()->json($muscle_gain);
     }
@@ -176,57 +195,16 @@ class FixedMealController extends Controller
             return response()->json($result);
     }
 
-    
-    // public function read(Request $request,  $muscle_gain) {
-    //     // $this->me = JWTAuth::parseToken()->authenticate();
-    //     // if (!($this->me->claims['temporary'] ?? $this->DISABLE_AUTH)) {
-    //     //     return response()->json(Constants::ERROR_UNAUTHORIZED, 403);
-    //     // }
+    public function truncate_muscle_gain(){
+        $query = \DB::table('muscle_gain')->truncate();
 
-    //     $query = \DB::table('muscle_gain')->where('muscle_gain.id', $muscle_gain);
-    //     $query = $query->join('breakfast', 'breakfast.id', '=', 'muscle_gain.meal_id')
-    //                    ->select(
-    //                        'breakfast.id_number',
-    //                        'breakfast.image',
-    //                        'breakfast.status',
-    //                        'breakfast.name',
-    //                        'breakfast.description',
-    //                        'breakfast.weight',
-    //                        'breakfast.filters',
-    //                        'breakfast.filters_additional_sides',
-    //                        'breakfast.status',
-    //                        'breakfast.category',
-    //                        'muscle_gain.meal_id',
-    //                        'muscle_gain.size_id',
-    //                        'muscle_gain.id',
-    //                    )
-    //                    ->get();
-                  
-    //         $result = array();
+        return response()->json(array("result" => "Reset Items!"));
+    }
     
-    //         foreach($query as $row){
-    //             $array = array();
-    //             $array['id'] = $row->id;
-    //             $array['id_number'] = $row->id_number;
-    //             $array['image'] = json_decode($row->image);
-    //             $array['status'] = $row->status;
-    
-    //             $array['name'] = $row->name;
-    //             $array['description'] = $row->description;
-    //             $array['weight'] = $row->weight;
-    
-    //             $array['filters'] = json_decode($row->filters);
-    //             $array['filters_additional_sides'] = json_decode($row->filters_additional_sides);
-    //             $array['status'] = $row->status;
-    
-    //             $array['category'] = $row->category;
-    //             $array['sizes'] = \DB::table('sizes')->where('id', json_decode($row->size_id))->get();
-    
-    //             array_push($result, $array);
-    //         }
-    
-        
-    //         return response()->json($result);
-    // }
+    public function remove_muscle_item(Request $request, $muscle_gain){
+        $query = \DB::table('muscle_gain')->where('id', $muscle_gain)->delete();
+
+        return response()->json(array("result" => "Item Deleted!"));
+    }
     
 }

@@ -17,16 +17,16 @@ class CreateSizesTable extends Migration
             $table->increments('id');
             $table->timestamps();
 
-            $table->integer('calorie')->nullable();
-            $table->integer('protein')->nullable();
-            $table->integer('carbohydrates')->nullable();
-            $table->integer('fats')->nullable();
-            $table->integer('saturated_fat')->nullable();
-            $table->integer('sugars')->nullable();
-            $table->integer('sodium')->nullable();
+            $table->integer('calorie')->dafault(0);
+            $table->integer('protein')->dafault(0);
+            $table->integer('carbohydrates')->dafault(0);
+            $table->integer('fats')->dafault(0);
+            $table->integer('saturated_fat')->dafault(0);
+            $table->integer('sugars')->dafault(0);
+            $table->integer('sodium')->dafault(0);
             $table->string('size')->nullable();
-            $table->integer('price')->nullable();
-            $table->integer('meal_id')->nullable();
+            $table->integer('price')->dafault(0);
+            $table->integer('meal_id')->dafault(0);
 
         });
     }
