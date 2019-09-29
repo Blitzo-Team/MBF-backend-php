@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Validator;
 use JWTAuth;
 use Carbon\Carbon;
 
-class FixedMealController extends Controller
+class LowCarbController extends Controller
 {
-    public function create_or_update(Request $request, \App\MuscleGain $MuscleGain, $is_new=false) {
+    public function create_or_update(Request $request, \App\LowCarb $LowCarb, $is_new=false) {
         
         $validator_arr = [
             // TODO
@@ -24,7 +24,7 @@ class FixedMealController extends Controller
 
         // checking valiidation
 
-        // $table = \DB::table('muscle_gain')->pluck('meal_id');
+        // $table = \DB::table('LowCarb')->pluck('meal_id');
 
         // for($i = 0; $i < count($data); $i++) {
         //     for($a = 0; $a < count($table); $a++) {
@@ -39,10 +39,10 @@ class FixedMealController extends Controller
         try {
             if ($is_new) {
                 foreach($data as $row) {
-                    $MuscleGain =  new \App\MuscleGain();
-                    $MuscleGain->size_id  = 0;
-                    $MuscleGain->meal_id  = $row['id'];
-                    $MuscleGain->save();
+                    $LowCarb =  new \App\LowCarb();
+                    $LowCarb->size_id  = 0;
+                    $LowCarb->meal_id  = $row['id'];
+                    $LowCarb->save();
                  }
             }
             else {
@@ -55,7 +55,7 @@ class FixedMealController extends Controller
         }
         \DB::commit();
 
-        return response()->json(array('MuscleGain' => $MuscleGain));
+        return response()->json(array('LowCarb' => $LowCarb));
     }
 
     public function create(Request $request) {
@@ -63,24 +63,24 @@ class FixedMealController extends Controller
         // if (!($this->me->claims['temporary'] ?? $this->DISABLE_AUTH)) {
         //     return response()->json(Constants::ERROR_UNAUTHORIZED, 403);
         // }
-        return $this->create_or_update($request, new \App\MuscleGain(), true);
+        return $this->create_or_update($request, new \App\LowCarb(), true);
     }
 
-    public function update(Request $request, \App\MuscleGain $muscle_gain) {
+    public function update(Request $request, \App\LowCarb $low_carb) {
         // $this->me = JWTAuth::parseToken()->authenticate();
         // if (!($this->me->claims['temporary'] ?? $this->DISABLE_AUTH)) {
         //     return response()->json(Constants::ERROR_UNAUTHORIZED, 403);
         // }
         if(request('id')){
-         $muscle_gain->meal_id = request('id');
+         $low_carb->meal_id = request('id');
         }
 
         if(request('size')){
-            $muscle_gain->size_id = request('size');
+            $low_carb->size_id = request('size');
         }
       
-        $muscle_gain->save();
-        return response()->json($muscle_gain);
+        $low_carb->save();
+        return response()->json($low_carb);
     }
     
     public function list(Request $request) {
@@ -88,8 +88,8 @@ class FixedMealController extends Controller
         // if (!($this->me->claims['temporary'] ?? $this->DISABLE_AUTH)) {
         //     return response()->json(Constants::ERROR_UNAUTHORIZED, 403);
         // }
-        $query = \DB::table('muscle_gain');
-        $query = $query->join('breakfast', 'breakfast.id', '=', 'muscle_gain.meal_id')
+        $query = \DB::table('low_carb');
+        $query = $query->join('breakfast', 'breakfast.id', '=', 'low_carb.meal_id')
                        ->select(
                            'breakfast.id_number',
                            'breakfast.image',
@@ -101,9 +101,9 @@ class FixedMealController extends Controller
                            'breakfast.filters_additional_sides',
                            'breakfast.status',
                            'breakfast.category',
-                           'muscle_gain.meal_id',
-                           'muscle_gain.size_id',
-                           'muscle_gain.id',
+                           'low_carb.meal_id',
+                           'low_carb.size_id',
+                           'low_carb.id',
                         );
                        
         // filtering
@@ -144,14 +144,14 @@ class FixedMealController extends Controller
     }
 
     
-    public function read(Request $request,  $muscle_gain) {
+    public function read(Request $request,  $low_carb) {
         // $this->me = JWTAuth::parseToken()->authenticate();
         // if (!($this->me->claims['temporary'] ?? $this->DISABLE_AUTH)) {
         //     return response()->json(Constants::ERROR_UNAUTHORIZED, 403);
         // }
 
-        $query = \DB::table('muscle_gain')->where('muscle_gain.id', $muscle_gain);
-        $query = $query->join('breakfast', 'breakfast.id', 'muscle_gain.meal_id')
+        $query = \DB::table('low_carb')->where('low_carb.id', $low_carb);
+        $query = $query->join('breakfast', 'breakfast.id', 'low_carb.meal_id')
                        ->select(
                            'breakfast.id_number',
                            'breakfast.image',
@@ -163,9 +163,9 @@ class FixedMealController extends Controller
                            'breakfast.filters_additional_sides',
                            'breakfast.status',
                            'breakfast.category',
-                           'muscle_gain.meal_id',
-                           'muscle_gain.size_id',
-                           'muscle_gain.id',
+                           'low_carb.meal_id',
+                           'low_carb.size_id',
+                           'low_carb.id',
                        )
                        ->get();
                   
@@ -196,16 +196,15 @@ class FixedMealController extends Controller
             return response()->json($result);
     }
 
-    public function truncate_muscle_gain(){
-        $query = \DB::table('muscle_gain')->truncate();
+    public function truncate_low_carb(){
+        $query = \DB::table('low_carb')->truncate();
 
         return response()->json(array("result" => "Reset Items!"));
     }
     
-    public function remove_muscle_item(Request $request, $muscle_gain){
-        $query = \DB::table('muscle_gain')->where('id', $muscle_gain)->delete();
+    public function remove_muscle_item(Request $request, $low_carb){
+        $query = \DB::table('low_carb')->where('id', $low_carb)->delete();
 
         return response()->json(array("result" => "Item Deleted!"));
     }
-    
 }
