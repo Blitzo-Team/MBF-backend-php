@@ -93,3 +93,8 @@ Route::get('/vegetarians', 'VegetarieanController@list');
 Route::get('/vegetarians/{vegetarian}', 'VegetarieanController@read'); 
 Route::post('/vegetarians/truncate_vegetarian', 'VegetarieanController@truncate_vegetarian'); 
 Route::delete('/vegetarians/{vegetarian}', 'VegetarieanController@remove_muscle_item'); 
+
+Route::post('/menu', 'MenuController@create'); 
+Route::put('/menu/{menu}/update', 'MenuController@update'); 
+Route::get('/menus', 'MenuController@list'); 
+Route::put('/menu/{menu}/edit_meal', 'MenuController@edit_meal');
