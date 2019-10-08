@@ -225,12 +225,19 @@ class MenuController extends Controller
             $array = [];
             $array['id_for_edit'] = $row->id;
             $array['day_1'] = \DB::table('breakfast')->where('id', $row->day_1_meal_id)->first();
+            $array['day_1_sizes'] = \DB::table('sizes')->where('meal_id', $row->day_1_meal_id)->get();
             $array['day_2'] = \DB::table('breakfast')->where('id', $row->day_2_meal_id)->first();
+            $array['day_2_sizes'] = \DB::table('sizes')->where('meal_id', $row->day_2_meal_id)->get();
             $array['day_3'] = \DB::table('breakfast')->where('id', $row->day_3_meal_id)->first();
+            $array['day_3_sizes'] = \DB::table('sizes')->where('meal_id', $row->day_3_meal_id)->get();
             $array['day_4'] = \DB::table('breakfast')->where('id', $row->day_4_meal_id)->first();
+            $array['day_4_sizes'] = \DB::table('sizes')->where('meal_id', $row->day_4_meal_id)->get();
             $array['day_5'] = \DB::table('breakfast')->where('id', $row->day_5_meal_id)->first();
+            $array['day_5_sizes'] = \DB::table('sizes')->where('meal_id', $row->day_5_meal_id)->get();
             $array['day_6'] = \DB::table('breakfast')->where('id', $row->day_6_meal_id)->first();
+            $array['day_6_sizes'] = \DB::table('sizes')->where('meal_id', $row->day_6_meal_id)->get();
             $array['day_7'] = \DB::table('breakfast')->where('id', $row->day_7_meal_id)->first();
+            $array['day_7_sizes'] = \DB::table('sizes')->where('meal_id', $row->day_7_meal_id)->get();
             $array['day_range'] = $row->day_range;
             array_push($result, $array);
         }

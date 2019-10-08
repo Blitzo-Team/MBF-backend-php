@@ -27,6 +27,7 @@ class CreateBreakfastTable extends Migration
             $table->string('sides', 255)->nullable();
             $table->integer('status')->nullable();
             $table->string('category')->nullable();
+            $table->string('ingredients')->nullable();
            
         });
     }

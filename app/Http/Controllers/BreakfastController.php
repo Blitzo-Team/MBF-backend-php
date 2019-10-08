@@ -32,13 +32,16 @@ class BreakfastController extends Controller
             $breakfast->id_number = request('id_number');
             $breakfast->status = 1;
             $breakfast->category = request('category');
-            $breakfast->sides = json_encode(request('sides'));;
-
+            $breakfast->sides = json_encode(request('sides')); 
+            $breakfast->ingredients = request('ingredients');
         \DB::beginTransaction();
             try {
                 if ($is_new) {
                     $breakfast->save();
-                    $breakfast->sizes = $this->add_sizes($request, $is_new, $breakfast->id);
+
+                    if($breakfast->id){
+                        $breakfast->sizes = $this->add_sizes($request, $is_new, $breakfast->id);
+                    }
                 
                 }
                 else {
@@ -128,6 +131,18 @@ class BreakfastController extends Controller
         return response()->json(array($table, $breakfast));
     }
 
+    public function update_size(Request $request, $breakfast) {
+        // $this->me = JWTAuth::parseToken()->authenticate();
+        // if (!($this->me->claims['temporary'] ?? $this->DISABLE_AUTH)) {
+        //     return response()->json(Constants::ERROR_UNAUTHORIZED, 403);
+        // }
+        $table = new \App\Breakfast();
+        $table -> where('id', $breakfast)
+               -> update(array( "sizes" => request('sizes') )); 
+
+        return response()->json(array($table, $breakfast));
+    }
+
     public function list(Request $request) {
         // $this->me = JWTAuth::parseToken()->authenticate();
         // if (!($this->me->claims['temporary'] ?? $this->DISABLE_AUTH)) {
@@ -152,15 +167,14 @@ class BreakfastController extends Controller
             $array['id_number'] = $row->id_number;
             $array['image'] = json_decode($row->image);
             $array['status'] = $row->status;
-
-            $array['name'] = $row->name;
+            $array['ingredients'] = $row->ingredients;
+            $array['name'] = $row->name; 
             $array['description'] = $row->description;
             $array['weight'] = $row->weight;
-
+            $array['default_size'] = \DB::table('sizes')->where('id', $row->sizes)->first();
             $array['filters'] = json_decode($row->filters);
             $array['filters_additional_sides'] = json_decode($row->filters_additional_sides);
             $array['status'] = $row->status;
-
             $array['category'] = $row->category;
             $array['sizes'] = \DB::table('sizes')->where('meal_id', $row->id)->get();
 
@@ -173,6 +187,15 @@ class BreakfastController extends Controller
 
     }
 
-    
+    public function sizes_list(){
+        $query = \DB::table('sizes');
+        $query = $query->select('*');
+        $ALLOWED_FILTERS = [];
+        $SEARCH_FIELDS = [];
+        $JSON_FIELDS = [];
+        $BOOL_FIELDS = [];
+        $result = $this->paginate_filter_sort_search($query, $ALLOWED_FILTERS, $JSON_FIELDS, $BOOL_FIELDS, $SEARCH_FIELDS);
+        return response()->json($result);
+    }
 
 }

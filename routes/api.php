@@ -34,9 +34,12 @@ Route::post('/slide', 'SlideController@create_or_update');
 ### Breakfast 
 Route::post('/breakfast', 'BreakfastController@create'); 
 Route::get('/breakfasts', 'BreakfastController@list');
+Route::get('/breakfasts/sizes', 'BreakfastController@sizes_list');
 Route::put('/breakfast/{breakfast}', 'BreakfastController@update');
-Route::get('/breakfasts/{breakfast}', 'BreakfastController@read');
+Route::get('/breakfasts/{breakfast}', 'BreakfastController@read'); 
 Route::put('/breakfast/{breakfast}/category', 'BreakfastController@update_category');
+Route::put('/breakfast/{breakfast}/size', 'BreakfastController@update_size');
+
 
 ### muscleGain
 Route::post('/muscle_gain', 'FixedMealController@create'); 
