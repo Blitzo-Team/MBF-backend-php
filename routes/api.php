@@ -35,6 +35,7 @@ Route::post('/slide', 'SlideController@create_or_update');
 Route::post('/breakfast', 'BreakfastController@create'); 
 Route::get('/breakfasts', 'BreakfastController@list');
 Route::get('/breakfasts/sizes', 'BreakfastController@sizes_list');
+Route::get('/breakfasts/sizes/{breakfast}', 'BreakfastController@sizes_list_count');
 Route::put('/breakfast/{breakfast}', 'BreakfastController@update');
 Route::get('/breakfasts/{breakfast}', 'BreakfastController@read'); 
 Route::put('/breakfast/{breakfast}/category', 'BreakfastController@update_category');

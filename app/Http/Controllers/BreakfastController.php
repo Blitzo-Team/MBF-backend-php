@@ -198,4 +198,10 @@ class BreakfastController extends Controller
         return response()->json($result);
     }
 
+    public function sizes_list_count(Request $request, $breakfast){
+        $query = \DB::table('sizes')->where('meal_id', $breakfast)->count();
+     
+        return response()->json($query);
+    }
+
 }
